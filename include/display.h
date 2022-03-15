@@ -5,7 +5,8 @@
 
 class Display {
     void u8g2_prepare(void);
+    void draw_string(const char* const content);
   public:
     void setup(void);
-    void draw_string(const char* const content);
+    void show_temperature(const float temperature);
 };

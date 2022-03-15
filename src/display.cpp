@@ -24,3 +24,9 @@ void Display::draw_string(const char* const content) {
     u8g2.drawStr(0,0, content);
     u8g2.sendBuffer();
 }
+
+void Display::show_temperature(const float temperature) {
+    char buffer[32];
+    sprintf(buffer, "Temperatur: %.1f %sC", temperature, "\xB0");
+    Display::draw_string(buffer);
+}
