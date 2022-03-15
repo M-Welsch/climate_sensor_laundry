@@ -34,6 +34,7 @@
 */
 
 #include <Arduino.h>
+#include <string.h>
 #include <U8g2lib.h>
 
 #include <Wire.h>
@@ -52,10 +53,17 @@ void setup(void) {
   u8g2.begin();
 }
 
+void temperature_string(char* buffer, const float temperature) {
+  sprintf(buffer, "Temperatur: %.1f %sC", temperature, "\xB0");
+}
+
 void loop(void) {
-  // picture loop  
   u8g2.clearBuffer();
   u8g2_prepare();
-  u8g2.drawStr(0,0,"Temperatur: 21°C");
+  float temperature = 21.123;
+  char buffer[32];
+  temperature_string(buffer, temperature);
+  u8g2.drawStr(0,0, buffer);
   u8g2.sendBuffer();
 }
+
