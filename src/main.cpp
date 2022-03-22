@@ -2,7 +2,7 @@
 #include <Wire.h>
 #include <string.h>
 #include "display.h"
-#include "temperature_readout.h"
+#include "temperature_sensor.h"
 
 
 Display display;
