@@ -8,7 +8,7 @@ struct Status {
   float ambient_temperature;
   float battery_voltage;
   float battery_soc;
-  char ip_address[32];
+  char ip_address[16];
 };
 
 class Display {

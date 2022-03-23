@@ -44,6 +44,7 @@ void Display::show_status(const struct Status *status) {
     show_line(buffer, 1);
     sprintf(buffer, "VBATT: %.1f V", status->battery_voltage);
     show_line(buffer, 2);
-    show_line(status->ip_address, 3);
+    sprintf(buffer, "IP: %s", status->ip_address);
+    show_line(buffer, 3);
     u8g2.sendBuffer();
 }
