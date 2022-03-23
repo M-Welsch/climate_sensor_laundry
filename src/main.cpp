@@ -27,5 +27,6 @@ void loop(void) {
   web_server.ip_address(status.ip_address);
   display.show_status(&status);
   Serial.printf("Temperature %f\n", status.probe_temperature);
+  web_server.handle_clients();
   delay(1000);
 }

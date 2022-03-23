@@ -4,9 +4,21 @@
 #include <string.h>
 
 
+ESP8266WebServer server(80);
+
+void handle_root(void) {
+    server.send(200, "text/html", "Blabla");
+}
+
+void WebServer::handle_clients(void) {
+    server.handleClient();
+}
+
 void WebServer::setup(void) {
-    ESP8266WebServer server(80);
     WiFi.begin(ssid, password);
+    connect();
+    server.on("/", handle_root);
+    server.begin();
 }
 
 void WebServer::connect(void) {

@@ -42,7 +42,7 @@ void Display::show_status(const struct Status *status) {
     show_line(buffer, 0);
     sprintf(buffer, "T(Umgebung): %.1f %sC", status->ambient_temperature, "\xB0");
     show_line(buffer, 1);
-    sprintf(buffer, "VBATT: %.1f V", status->battery_voltage);
+    sprintf(buffer, "VBATT: %.2f V", status->battery_voltage);
     show_line(buffer, 2);
     sprintf(buffer, "IP: %s", status->ip_address);
     show_line(buffer, 3);
