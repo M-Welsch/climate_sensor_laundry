@@ -2,14 +2,7 @@
 #include <string.h>
 
 #include <Wire.h>
-
-struct Status {
-  float probe_temperature;
-  float ambient_temperature;
-  float battery_voltage;
-  float battery_soc;
-  char ip_address[16];
-};
+#include "status.h"
 
 class Display {
     void u8g2_prepare(void);

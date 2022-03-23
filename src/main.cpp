@@ -9,15 +9,15 @@
 Display display;
 Temperature_Sensor temperature_sensor;
 BatteryMonitor battery_monitor;
-Status status;
 WebServer web_server;
+Status status;
 
 void setup(void) {
   Wire.begin();
   Serial.begin(9600);
   display.setup();
   temperature_sensor.setup();
-  web_server.setup();
+  web_server.setup(&status);
 }
 
 void loop(void) {
