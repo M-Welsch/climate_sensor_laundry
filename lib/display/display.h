@@ -8,11 +8,12 @@ struct Status {
   float ambient_temperature;
   float battery_voltage;
   float battery_soc;
+  char ip_address[32];
 };
 
 class Display {
     void u8g2_prepare(void);
-    void draw_string(const char* const content, int line);
+    void show_line(const char* const content, int line);
   public:
     void setup(void);
     void show_temperature(const float temperature);

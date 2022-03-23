@@ -18,32 +18,32 @@ void Display::u8g2_prepare(void) {
     u8g2.setFontDirection(0);
 }
 
-void Display::draw_string(const char* const content, int line) {
-    u8g2.clearBuffer();
-    u8g2_prepare();
-    u8g2.drawStr(0, line, content);
-    u8g2.sendBuffer();
+void Display::show_line(const char* const content, int line) {
+    u8g2.drawStr(0, line*16, content);
 }
 
 void Display::show_temperature(const float temperature) {
     char buffer[32];
     sprintf(buffer, "Temp: %.1f %sC", temperature, "\xB0");
-    Display::draw_string(buffer, 0);
+    Display::show_line(buffer, 0);
 }
 
 void Display::show_battery_status(const float voltage) {
     char buffer[32];
     sprintf(buffer, "VBATT: %.1f %sC", voltage, "V");
-    Display::draw_string(buffer, 10);
+    Display::show_line(buffer, 10);
 }
 
 void Display::show_status(const struct Status *status) {
     char buffer[32];
     u8g2.clearBuffer();
     u8g2_prepare();
-    sprintf(buffer, "Temp: %.1f %sC", status->probe_temperature, "\xB0");
-    u8g2.drawStr(0, 0, buffer);
+    sprintf(buffer, "T(Ofen): %.1f %sC", status->probe_temperature, "\xB0");
+    show_line(buffer, 0);
+    sprintf(buffer, "T(Umgebung): %.1f %sC", status->ambient_temperature, "\xB0");
+    show_line(buffer, 1);
     sprintf(buffer, "VBATT: %.1f V", status->battery_voltage);
-    u8g2.drawStr(0, 16, buffer);
+    show_line(buffer, 2);
+    show_line(status->ip_address, 3);
     u8g2.sendBuffer();
 }
