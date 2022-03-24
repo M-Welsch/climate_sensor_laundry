@@ -3,15 +3,17 @@
 #include <ESP8266WebServer.h>
 #include <string.h>
 #include "status.h"
+#include "table.h"
 
 Status *webserver_status;
 
 ESP8266WebServer server(80);
 
 void handle_root(void) {
-    char buffer[128];
-    sprintf(buffer, "Fuehlertemperatur: %f", webserver_status->probe_temperature);
-    server.send(200, "text/html", buffer);
+    String s = HEAD;
+    s.concat(concat_data_table(webserver_status));
+    s.concat(FOOT);
+    server.send(200, "text/html", s);
 }
 
 void WebServer::handle_clients(void) {

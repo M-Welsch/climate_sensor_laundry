@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include <Wire.h>
 #include <string.h>
 #include "display.h"
 #include "temperature_sensor.h"
 #include "battery_monitor.h"
 #include "web_server.h"
+#include "logger.h"
 
 Display display;
 Temperature_Sensor temperature_sensor;
@@ -13,7 +13,6 @@ WebServer web_server;
 Status status;
 
 void setup(void) {
-  Wire.begin();
   Serial.begin(9600);
   display.setup();
   temperature_sensor.setup();
@@ -26,7 +25,7 @@ void loop(void) {
   status.battery_voltage = battery_monitor.voltage();
   web_server.ip_address(status.ip_address);
   display.show_status(&status);
-  Serial.printf("Temperature %f\n", status.probe_temperature);
+  log_to_console(&status);
   web_server.handle_clients();
   delay(1000);
 }
