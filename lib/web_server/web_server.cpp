@@ -16,6 +16,11 @@ void handle_root(void) {
     server.send(200, "text/html", s);
 }
 
+void handle_rest_api(void) {
+    String s = concat_json(webserver_status);
+    server.send(200, "application/json", s);
+}
+
 void WebServer::handle_clients(void) {
     server.handleClient();
 }
@@ -23,6 +28,7 @@ void WebServer::handle_clients(void) {
 void WebServer::setup(Status *main_status) {
     WiFi.begin(ssid, password);
     server.on("/", handle_root);
+    server.on("/rest_api", handle_rest_api);
     server.begin();
     webserver_status = main_status;
 }
