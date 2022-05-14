@@ -4,6 +4,7 @@
 #include <string.h>
 #include "status.h"
 #include "table.h"
+#include "json.h"
 
 Status *webserver_status;
 
