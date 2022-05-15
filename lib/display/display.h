@@ -12,4 +12,6 @@ class Display {
     void show_temperature(const float temperature);
     void show_battery_status(const float voltage);
     void show_status(const struct Status *status);
+    void show_undervoltage(const float voltage);
+    void off(void);
 };

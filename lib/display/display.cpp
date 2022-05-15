@@ -48,3 +48,21 @@ void Display::show_status(const struct Status *status) {
     show_line(buffer, 3);
     u8g2.sendBuffer();
 }
+
+
+void Display::show_undervoltage(const float voltage) {
+    char buffer[32];
+    u8g2.clearBuffer();
+    u8g2_prepare();
+    sprintf(buffer, "VBATT: %.1f %sC", voltage, "V");
+    show_line(buffer, 0);
+    show_line("! Undervoltage !", 1);
+    show_line("Going to sleep!", 3);
+    u8g2.sendBuffer();
+}
+
+void Display::off(void) {
+    u8g2.clear();
+    u8g2.setPowerSave(1);
+    u8g2.sleepOn();
+}
