@@ -34,18 +34,14 @@ void Display::show_battery_status(const float voltage) {
     Display::show_line(buffer, 10);
 }
 
-void Display::show_status(const struct Status *status) {
+void Display::show_status(const status_t *status) {
     char buffer[32];
     u8g2.clearBuffer();
     u8g2_prepare();
-    sprintf(buffer, "T(Ofen): %.1f %sC", status->probe_temperature, "\xB0");
+    sprintf(buffer, "Innen: %.1f %sC, %.1f%", status->insideTemperature, "\xB0", status->insideHumidity);
     show_line(buffer, 0);
-    sprintf(buffer, "T(Umgebung): %.1f %sC", status->ambient_temperature, "\xB0");
+    sprintf(buffer, "Innen: %.1f %sC, %.1f%", status->outsideTemperature, "\xB0", status->outsideHumidity);
     show_line(buffer, 1);
-    sprintf(buffer, "VBATT: %.2f V", status->battery_voltage);
-    show_line(buffer, 2);
-    sprintf(buffer, "IP: %s", status->ip_address);
-    show_line(buffer, 3);
     u8g2.sendBuffer();
 }
 

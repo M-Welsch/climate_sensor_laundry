@@ -3,7 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include "display.h"
-#include "temperature_sensor.h"
+#include "dht22.h"
 #include "battery_monitor.h"
 #include "logger.h"
 #include "mqtt.h"
@@ -15,48 +15,35 @@
 #define mqtt_user "iot"
 #define mqtt_password "test123"
 
-#define topic "Backofen"
+#define topic "Waschhaus"
 
 Display display;
-Temperature_Sensor temperature_sensor;
-BatteryMonitor battery_monitor;
-Status status;
+status_t status;
 
 void setup(void) {
   Serial.begin(9600);
-  display.setup();
-  temperature_sensor.setup();
   mqttSetup();
-}
-
-void undervoltage_check(const float voltage) {
-  if (battery_monitor.undervoltage(voltage)) {
-    display.show_undervoltage(voltage);
-    delay(3000);
-    display.off();
-    ESP.deepSleep(0);
-  }
+  //dhtSetup();
+  //display.setup();
 }
 
 long lastMsg = 0;
 void loop() {
+  Serial.println("Loop");
   reconnect();
   mqttLoop();
 
   long now = millis();
   if (now - lastMsg > 1000) {
     lastMsg = now;
-    status.ambient_temperature = temperature_sensor.get_ambient_temperature_degrees();
-    status.probe_temperature = temperature_sensor.get_probe_temperature_degrees();
-    status.battery_voltage = battery_monitor.voltage();
 
-    undervoltage_check(status.battery_voltage);
-
-    display.show_status(&status);
+    //dhtGetValues(&status);
+    //display.show_status(&status);
     log_to_console(&status);
-
+    status.insideTemperature = 4;
+    status.outsideTemperature = 12;
     char buffer[128];
-    sprintf(buffer, "{\"Ofentemperatur\": %.2f, \"Aussentemperatur\": %.2f, \"Batteriespannung\": %.2f}", status.ambient_temperature, status.ambient_temperature, status.battery_voltage);
+    sprintf(buffer, "{\"Keller Innentemperatur\": %.2f, \"Keller Aussentemperatur\": %.2f}", status.insideTemperature, status.outsideTemperature);
     mqttPublish(buffer);
   }
 }
