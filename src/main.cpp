@@ -27,8 +27,6 @@ Button button;
 void setup()
 {
   Serial.begin(115200);
-  String thisBoard= ARDUINO_BOARD;
-  Serial.println(thisBoard);
   dhtSetup();
   display.setup();
   button.setup(BUTTON_GPIO);
