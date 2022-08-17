@@ -1,12 +1,9 @@
 #include <Arduino.h>
 #include <string.h>
+#include "DHTesp.h"
+
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include "display.h"
-#include "dht22.h"
-#include "battery_monitor.h"
-#include "logger.h"
-#include "mqtt.h"
 
 #define wifi_ssid "NETGEAR"
 #define wifi_password "XL12ABZXYGKIDO"
@@ -17,33 +14,41 @@
 
 #define topic "Waschhaus"
 
-Display display;
-status_t status;
 
-void setup(void) {
-  Serial.begin(9600);
-  mqttSetup();
-  //dhtSetup();
-  //display.setup();
+DHTesp dht;
+DHTesp dht2;
+
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("Status\tHumidity (%)\tTemperature (C)\t(F)\tHeatIndex (C)\t(F)");
+  String thisBoard= ARDUINO_BOARD;
+  Serial.println(thisBoard);
+
+  dht.setup(12, DHTesp::DHT22); // Connect DHT sensor to GPIO 17
+  dht2.setup(14, DHTesp::DHT22); // Connect DHT sensor to GPIO 17
 }
 
-long lastMsg = 0;
-void loop() {
-  Serial.println("Loop");
-  reconnect();
-  mqttLoop();
+void loop()
+{
+  delay(dht.getMinimumSamplingPeriod());
 
-  long now = millis();
-  if (now - lastMsg > 1000) {
-    lastMsg = now;
+  float humidity = dht.getHumidity();
+  float temperature = dht.getTemperature();
 
-    //dhtGetValues(&status);
-    //display.show_status(&status);
-    log_to_console(&status);
-    status.insideTemperature = 4;
-    status.outsideTemperature = 12;
-    char buffer[128];
-    sprintf(buffer, "{\"Keller Innentemperatur\": %.2f, \"Keller Aussentemperatur\": %.2f}", status.insideTemperature, status.outsideTemperature);
-    mqttPublish(buffer);
-  }
+  float humidity2 = dht2.getHumidity();
+  float temperature2 = dht2.getTemperature();
+
+  Serial.print(dht.getStatusString());
+  Serial.print("\t");
+  Serial.print(humidity, 1);
+  Serial.print("\t\t");
+  Serial.print(temperature, 1);
+  Serial.print("\t\t");
+  Serial.print(humidity2, 1);
+  Serial.print("\t\t");
+  Serial.print(temperature2, 1);
+  Serial.print("\n");
+  delay(2000);
 }
