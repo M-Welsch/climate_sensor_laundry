@@ -38,22 +38,10 @@ void Display::show_status(const status_t *status) {
     char buffer[32];
     u8g2.clearBuffer();
     u8g2_prepare();
-    sprintf(buffer, "Innen: %.1f %sC, %.1f%", status->insideTemperature, "\xB0", status->insideHumidity);
+    sprintf(buffer, "Innen: %.1f %sC, %.1f", status->insideTemperature, "\xB0", status->insideHumidity);
     show_line(buffer, 0);
-    sprintf(buffer, "Innen: %.1f %sC, %.1f%", status->outsideTemperature, "\xB0", status->outsideHumidity);
+    sprintf(buffer, "Außen: %.1f %sC, %.1f", status->outsideTemperature, "\xB0", status->outsideHumidity);
     show_line(buffer, 1);
-    u8g2.sendBuffer();
-}
-
-
-void Display::show_undervoltage(const float voltage) {
-    char buffer[32];
-    u8g2.clearBuffer();
-    u8g2_prepare();
-    sprintf(buffer, "VBATT: %.1f %sC", voltage, "V");
-    show_line(buffer, 0);
-    show_line("! Undervoltage !", 1);
-    show_line("Going to sleep!", 3);
     u8g2.sendBuffer();
 }
 
