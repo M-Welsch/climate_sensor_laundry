@@ -7,7 +7,7 @@
 #define mqtt_user "iot"
 #define mqtt_password "test123"
 
-#define topic "Backofen"
+#define topic "Waschkueche"
 
 WiFiClient espClient;
 PubSubClient client(espClient);

@@ -38,9 +38,9 @@ void Display::show_status(const status_t *status) {
     char buffer[32];
     u8g2.clearBuffer();
     u8g2_prepare();
-    sprintf(buffer, "Innen: %.1f %sC, %.1f", status->insideTemperature, "\xB0", status->insideHumidity);
+    sprintf(buffer, "In: %.1f %sC, %.1f", status->insideTemperature, "\xB0", status->insideHumidity);
     show_line(buffer, 0);
-    sprintf(buffer, "Außen: %.1f %sC, %.1f", status->outsideTemperature, "\xB0", status->outsideHumidity);
+    sprintf(buffer, "Au: %.1f %sC, %.1f", status->outsideTemperature, "\xB0", status->outsideHumidity);
     show_line(buffer, 1);
     u8g2.sendBuffer();
 }
