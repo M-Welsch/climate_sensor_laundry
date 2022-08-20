@@ -11,7 +11,7 @@
 #include "led.h"
 #include "mqtt.h"
 
-#define wifi_ssid "NETGEAR"
+#define wifi_ssid "NETGEAR_Repeater"
 #define wifi_password "XL12ABZXYGKIDO"
 
 #define mqtt_server "192.168.0.2"
@@ -48,7 +48,7 @@ void loop()
     Serial.printf("button pressed: %i\n", button.pressed());
     
     char buffer[256];
-    sprintf(buffer, "{\"TemperaturInnen\": %.2f, \"LuftfeuchtigkeitInnen\": %.2f, \"TemperaturAussen\": %.2f, \"LuftfeuchtigkeitAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.outsideTemperature, status.outsideHumidity);
+    sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %.2f, \"WaschkuecheLuftfeuchtigkeitInnen\": %.2f, \"WaschkuecheTemperaturAussen\": %.2f, \"WaschkuecheLuftfeuchtigkeitAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.outsideTemperature, status.outsideHumidity);
     mqttPublish(buffer);
     delay(100);
   }
