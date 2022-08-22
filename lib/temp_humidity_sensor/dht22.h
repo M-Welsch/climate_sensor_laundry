@@ -8,4 +8,5 @@ typedef enum {
 } dpError_e;
 
 void dhtSetup();
+float dewPoint(const float temperature, const float humidity);
 dpError_e dhtGetValues(status_t *status);
