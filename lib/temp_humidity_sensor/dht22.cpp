@@ -33,13 +33,15 @@ static float _magnusFormula(const float temperature) {
     float a = _a(temperature);
     float b = _b(temperature);
     float exponent = (a * temperature) / (b + temperature);
-    return pow(MAGNUS_CONSTANT, exponent);
+    return MAGNUS_CONSTANT * pow(10, exponent);
 }
+
 
 float dewPoint(const float temperature, const float humidity) {
     float magnus = _magnusFormula(temperature);
-    float numerator = _b(temperature) * log10((magnus * humidity/100) / MAGNUS_CONSTANT);
-    float denominator = _a(temperature) * log10((magnus * humidity/100) / MAGNUS_CONSTANT);
+    float bracket = (magnus * humidity/100) / MAGNUS_CONSTANT;
+    float numerator = _b(temperature) * log10(bracket);
+    float denominator = _a(temperature) - log10(bracket);
     return numerator/denominator;
 }
 
@@ -47,7 +49,9 @@ dpError_e dhtGetValues(status_t *status) {
     delay(dhtInside.getMinimumSamplingPeriod());
     status->insideTemperature = dhtInside.getTemperature();
     status->insideHumidity = dhtInside.getHumidity();
+    status->insideDewPoint = dewPoint(status->insideTemperature, status->insideHumidity);
     status->outsideTemperature = dhtOutside.getTemperature();
     status->outsideHumidity = dhtOutside.getHumidity();
+    status->outsideDewPoint = dewPoint(status->outsideTemperature, status->outsideHumidity);
     return dpSUCCESS;
 }

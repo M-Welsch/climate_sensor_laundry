@@ -11,7 +11,7 @@ void Display::setup(void) {
 }
 
 void Display::u8g2_prepare(void) {
-    u8g2.setFont(u8g2_font_7x14_tf);  // u8g2_font_6x10_tf);
+    u8g2.setFont(u8g2_font_6x10_tf);  // u8g2_font_6x10_tf);
     u8g2.setFontRefHeightExtendedText();
     u8g2.setDrawColor(1);
     u8g2.setFontPosTop();
@@ -38,10 +38,16 @@ void Display::show_status(const status_t *status) {
     char buffer[32];
     u8g2.clearBuffer();
     u8g2_prepare();
-    sprintf(buffer, "I %.1f %sC, %.1f", status->insideTemperature, "\xB0", status->insideHumidity);
-    show_line(buffer, 0);
-    sprintf(buffer, "A %.1f %sC, %.1f", status->outsideTemperature, "\xB0", status->outsideHumidity);
+    static const char headline[] = "     Innen    Aussen";
+    show_line(headline, 0);
+    char minusSignInside = status->insideTemperature>0 ? ' ' : '-';
+    char minusSignOutside = status->outsideTemperature>0 ? ' ' : '-';
+    sprintf(buffer, "T   %c%4.1f %sC %c%4.1f %sC", minusSignInside, status->insideTemperature, "\xB0", minusSignOutside, status->outsideTemperature, "\xB0");
     show_line(buffer, 1);
+    sprintf(buffer, "H    %4.1f %%   %4.1f %%", status->insideHumidity, status->outsideHumidity);
+    show_line(buffer, 2);
+    sprintf(buffer,"Tp  %4.1f %sC  %4.1f %sC", status->insideDewPoint, "\xB0", status->outsideDewPoint, "\xB0");
+    show_line(buffer, 3);
     u8g2.sendBuffer();
 }
 
