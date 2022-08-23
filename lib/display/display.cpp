@@ -10,6 +10,10 @@ void Display::setup(void) {
     u8g2.begin();
 }
 
+void Display::waitForWifi(void) {
+    Display::show_line("Waiting for Wifi ...", 0);   
+}
+
 void Display::u8g2_prepare(void) {
     u8g2.setFont(u8g2_font_6x10_tf);  // u8g2_font_6x10_tf);
     u8g2.setFontRefHeightExtendedText();
@@ -19,7 +23,7 @@ void Display::u8g2_prepare(void) {
 }
 
 void Display::show_line(const char* const content, int line) {
-    u8g2.drawStr(0, line*16, content);
+    u8g2.drawStr(0, line*14, content);
 }
 
 void Display::show_temperature(const float temperature) {

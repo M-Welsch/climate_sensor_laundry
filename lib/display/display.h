@@ -9,6 +9,7 @@ class Display {
     void show_line(const char* const content, int line);
   public:
     void setup(void);
+    void waitForWifi(void);
     void show_temperature(const float temperature);
     void show_battery_status(const float voltage);
     void show_status(const status_t *status);
