@@ -31,13 +31,6 @@ void reconnect() {
   }
 }
 
-void mqttPublish(char* buffer) {
-    client.publish(topic, buffer, true);
-}
-
-
-
-
 typedef enum {bsSUCCESS, bsERROR} bsError;
 
 bsError wrapIntoJson(char* outstr, const char* instr) {
@@ -60,6 +53,34 @@ bsError jsonLine(char* outstr, const char* identifier, const float value, const 
     }
     return bsSUCCESS;
 }
+
+void mqttPublishStatus(status_t *status) {
+  char buffer[512];
+  char tempBuffer[64];
+  //sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %f}", status->insideTemperature, status->insideHumidity, status->insideDewPoint, status->outsideTemperature, status->outsideHumidity, status->outsideDewPoint);
+  jsonLine(tempBuffer, "WaschkuecheTemperaturInnen", status->insideTemperature, false);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  jsonLine(tempBuffer, "WaschkuecheLuftfeuchtigkeitInnen", status->insideHumidity, false);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  jsonLine(tempBuffer, "WaschkuecheTaupunktInnen", status->insideDewPoint, false);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  jsonLine(tempBuffer, "WaschkuecheTemperaturAussen", status->outsideTemperature, false);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  jsonLine(tempBuffer, "WaschkuecheLuftfeuchtigkeitAussen", status->outsideHumidity, false);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  jsonLine(tempBuffer, "WaschkuecheTaupunktAussen", status->outsideDewPoint, true);
+  sprintf(buffer, "%s%s", buffer, tempBuffer);
+  wrapIntoJson(buffer, buffer);
+  client.publish(topic, buffer, true);
+}
+
+void mqttPublish(char* buffer) {
+    client.publish(topic, buffer, true);
+}
+
+
+
+
 
 // void sendToServer(const struct Status *status) {
 //     connect();

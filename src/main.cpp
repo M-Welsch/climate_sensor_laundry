@@ -41,8 +41,13 @@ void wifiConnection() {
   }
 }
 
+typedef enum {displayOn, displayOff} displayState_e;
+displayState_e displayState;
+uint16_t displayCounter = 0;
+
 void setup()
 {
+  displayState = displayOn;
   Serial.begin(115200);
   dht.setup();
   display.setup();
@@ -60,13 +65,13 @@ void loop()
   uint16_t now = millis();
   if (now-lastMsg > 1000) {
     dht.getValues(&status);
-    display.show_status(&status);
     Serial.printf("Ti: %.1f, To: %.1f\n", status.insideTemperature, status.outsideTemperature);
     Serial.printf("button pressed: %i\n", button.pressed());
     
     char buffer[256];
-    sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %.2f, \"WaschkuecheLuftfeuchtigkeitInnen\": %.2f, \"WaschkuecheTemperaturAussen\": %.2f, \"WaschkuecheLuftfeuchtigkeitAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.outsideTemperature, status.outsideHumidity);
+    sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %.2f, \"WaschkuecheLuftfeuchtigkeitInnen\": %.2f, \"WaschkuecheTaupunktInnen\": %.2f, \"WaschkuecheTemperaturAussen\": %.2f, \"WaschkuecheLuftfeuchtigkeitAussen\": %.2f, \"WaschkuecheTaupunktAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.insideDewPoint, status.outsideTemperature, status.outsideHumidity, status.outsideDewPoint);
     mqttPublish(buffer);
+    //mqttPublishStatus(&status);
     if (status.insideDewPoint < status.outsideDewPoint) {
       ledGreen.on();
     }
@@ -74,5 +79,24 @@ void loop()
       ledGreen.off();
     }
     delay(100);
+  }
+
+  if (displayState == displayOn) {
+    display.show_status(&status);
+    displayCounter++;
+    Serial.printf("displaycounter: %i\n", displayCounter);
+    if (displayCounter > 12) {
+      displayState = displayOff;
+    }
+  }
+  else {
+    if (button.pressed()) {
+      displayState = displayOn;
+      display.on();
+      displayCounter = 0;
+    }
+    else {
+      display.off();
+    }
   }
 }

@@ -15,4 +15,5 @@ class Display {
     void show_status(const status_t *status);
     void show_undervoltage(const float voltage);
     void off(void);
+    void on(void);
 };

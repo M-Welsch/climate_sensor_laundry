@@ -60,3 +60,7 @@ void Display::off(void) {
     u8g2.setPowerSave(1);
     u8g2.sleepOn();
 }
+
+void Display::on(void) {
+    u8g2.setPowerSave(0);
+}
