@@ -15,9 +15,6 @@
 
 #define WIFI_HOTSPOT_NAME "Taupunktsensor"
 
-#define wifi_ssid "NETGEAR_Repeater"
-#define wifi_password "XL12ABZXYGKIDO"
-
 #define mqtt_server "192.168.0.2"
 #define mqtt_user "iot"
 #define mqtt_password "test123"
@@ -30,6 +27,7 @@ status_t status;
 Display display;
 Button button;
 Led ledGreen;
+Dht dht;
 
 void wifiConnection() {
   WiFiManager wifiManager;
@@ -46,7 +44,7 @@ void wifiConnection() {
 void setup()
 {
   Serial.begin(115200);
-  dhtSetup();
+  dht.setup();
   display.setup();
   ledGreen.setup(LED_GREEN_GPIO);
   button.setup(BUTTON_GPIO);
@@ -58,11 +56,10 @@ uint16_t lastMsg = 0;
 void loop()
 {
   reconnect();
-  mqttLoop();
 
   uint16_t now = millis();
   if (now-lastMsg > 1000) {
-    dhtGetValues(&status);
+    dht.getValues(&status);
     display.show_status(&status);
     Serial.printf("Ti: %.1f, To: %.1f\n", status.insideTemperature, status.outsideTemperature);
     Serial.printf("button pressed: %i\n", button.pressed());

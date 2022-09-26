@@ -1,4 +1,5 @@
 #include "status.h"
+#include "DHTesp.h"
 
 #define DHT_INSIDE_GPIO 12
 #define DHT_OUTSIDE_GPIO 14
@@ -7,6 +8,10 @@ typedef enum {
     dpSUCCESS, dpERROR
 } dpError_e;
 
-void dhtSetup();
-float dewPoint(const float temperature, const float humidity);
-dpError_e dhtGetValues(status_t *status);
+class Dht {
+        DHTesp dhtInside;
+        DHTesp dhtOutside;
+    public:
+        void setup();
+        dpError_e getValues(status_t *status);
+};

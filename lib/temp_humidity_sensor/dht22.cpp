@@ -4,9 +4,6 @@
 
 #include "dht22.h"
 
-DHTesp dhtInside;
-DHTesp dhtOutside;
-
 #define MAGNUS_CONSTANT 6.1078f
 #define PARAM_A_ABOVE_ZERO 7.5f
 #define PARAM_A_BELOW_ZERO 7.6f
@@ -14,7 +11,7 @@ DHTesp dhtOutside;
 #define PARAM_B_BELOW_ZERO 240.7f
 
 
-void dhtSetup() {
+void Dht::setup() {
     Serial.println("setting up dhts");
     dhtInside.setup(DHT_INSIDE_GPIO, DHTesp::DHT22);
     dhtOutside.setup(DHT_OUTSIDE_GPIO, DHTesp::DHT22);
@@ -37,7 +34,7 @@ static float _magnusFormula(const float temperature) {
 }
 
 
-float dewPoint(const float temperature, const float humidity) {
+float _dewPoint(const float temperature, const float humidity) {
     float magnus = _magnusFormula(temperature);
     float bracket = (magnus * humidity/100) / MAGNUS_CONSTANT;
     float numerator = _b(temperature) * log10(bracket);
@@ -45,13 +42,13 @@ float dewPoint(const float temperature, const float humidity) {
     return numerator/denominator;
 }
 
-dpError_e dhtGetValues(status_t *status) {
+dpError_e Dht::getValues(status_t *status) {
     delay(dhtInside.getMinimumSamplingPeriod());
     status->insideTemperature = dhtInside.getTemperature();
     status->insideHumidity = dhtInside.getHumidity();
-    status->insideDewPoint = dewPoint(status->insideTemperature, status->insideHumidity);
+    status->insideDewPoint = _dewPoint(status->insideTemperature, status->insideHumidity);
     status->outsideTemperature = dhtOutside.getTemperature();
     status->outsideHumidity = dhtOutside.getHumidity();
-    status->outsideDewPoint = dewPoint(status->outsideTemperature, status->outsideHumidity);
+    status->outsideDewPoint = _dewPoint(status->outsideTemperature, status->outsideHumidity);
     return dpSUCCESS;
 }
