@@ -3,6 +3,7 @@
 #include "status.h"
 
 void mqttSetup();
+void getOutsideValues(status_t* status);
 void sendToServer(const struct Status *status);
 void reconnect();
 void mqttPublish(char* buffer); 

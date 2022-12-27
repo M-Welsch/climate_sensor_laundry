@@ -14,7 +14,7 @@
 void Dht::setup() {
     Serial.println("setting up dhts");
     dhtInside.setup(DHT_INSIDE_GPIO, DHTesp::DHT22);
-    dhtOutside.setup(DHT_OUTSIDE_GPIO, DHTesp::DHT22);
+    // dhtOutside.setup(DHT_OUTSIDE_GPIO, DHTesp::DHT22);
     Serial.println("set up dhts");
 }
 
@@ -47,8 +47,8 @@ dpError_e Dht::getValues(status_t *status) {
     status->insideTemperature = dhtInside.getTemperature();
     status->insideHumidity = dhtInside.getHumidity();
     status->insideDewPoint = _dewPoint(status->insideTemperature, status->insideHumidity);
-    status->outsideTemperature = dhtOutside.getTemperature();
-    status->outsideHumidity = dhtOutside.getHumidity();
+    // status->outsideTemperature = dhtOutside.getTemperature();
+    // status->outsideHumidity = dhtOutside.getHumidity();
     status->outsideDewPoint = _dewPoint(status->outsideTemperature, status->outsideHumidity);
     return dpSUCCESS;
 }

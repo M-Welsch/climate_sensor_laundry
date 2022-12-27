@@ -19,7 +19,6 @@
 #define mqtt_user "iot"
 #define mqtt_password "test123"
 
-#define topic "Waschkueche"
 #define BUTTON_GPIO 13
 #define LED_GREEN_GPIO 15
 
@@ -42,8 +41,14 @@ void wifiConnection() {
 }
 
 typedef enum {displayOn, displayOff} displayState_e;
-displayState_e displayState;
-uint16_t displayCounter = 0;
+volatile displayState_e displayState;
+volatile uint16_t displayCounter = 0;
+
+void ICACHE_RAM_ATTR ISR() {
+  Serial.println("Pressed!");
+  displayCounter = 0;
+  displayState = displayOn;
+}
 
 void setup()
 {
@@ -53,6 +58,7 @@ void setup()
   display.setup();
   ledGreen.setup(LED_GREEN_GPIO);
   button.setup(BUTTON_GPIO);
+  attachInterrupt(BUTTON_GPIO, ISR, FALLING);
   wifiConnection();
   mqttSetup();
 }
@@ -65,8 +71,8 @@ void loop()
   uint16_t now = millis();
   if (now-lastMsg > 1000) {
     dht.getValues(&status);
+    getOutsideValues(&status);
     Serial.printf("Ti: %.1f, To: %.1f\n", status.insideTemperature, status.outsideTemperature);
-    Serial.printf("button pressed: %i\n", button.pressed());
     
     char buffer[256];
     sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %.2f, \"WaschkuecheLuftfeuchtigkeitInnen\": %.2f, \"WaschkuecheTaupunktInnen\": %.2f, \"WaschkuecheTemperaturAussen\": %.2f, \"WaschkuecheLuftfeuchtigkeitAussen\": %.2f, \"WaschkuecheTaupunktAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.insideDewPoint, status.outsideTemperature, status.outsideHumidity, status.outsideDewPoint);
@@ -81,22 +87,19 @@ void loop()
     delay(100);
   }
 
+  static bool displayOnTriggered = false;
   if (displayState == displayOn) {
+    if (!displayOnTriggered) {
+      display.on();
+      displayOnTriggered = true;
+    }
     display.show_status(&status);
     displayCounter++;
     Serial.printf("displaycounter: %i\n", displayCounter);
     if (displayCounter > 12) {
       displayState = displayOff;
-    }
-  }
-  else {
-    if (button.pressed()) {
-      displayState = displayOn;
-      display.on();
-      displayCounter = 0;
-    }
-    else {
       display.off();
+      displayOnTriggered = false;
     }
   }
 }
