@@ -47,8 +47,6 @@ dpError_e Dht::getValues(status_t *status) {
     status->insideTemperature = dhtInside.getTemperature();
     status->insideHumidity = dhtInside.getHumidity();
     status->insideDewPoint = _dewPoint(status->insideTemperature, status->insideHumidity);
-    // status->outsideTemperature = dhtOutside.getTemperature();
-    // status->outsideHumidity = dhtOutside.getHumidity();
     status->outsideDewPoint = _dewPoint(status->outsideTemperature, status->outsideHumidity);
     return dpSUCCESS;
 }

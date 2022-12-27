@@ -15,10 +15,6 @@
 
 #define WIFI_HOTSPOT_NAME "Taupunktsensor"
 
-#define mqtt_server "192.168.0.2"
-#define mqtt_user "iot"
-#define mqtt_password "test123"
-
 #define BUTTON_GPIO 13
 #define LED_GREEN_GPIO 15
 
@@ -67,18 +63,21 @@ uint16_t lastMsg = 0;
 void loop()
 {
   reconnect();
+  static uint8_t publishCounter = 0;
 
   uint16_t now = millis();
   if (now-lastMsg > 1000) {
     dht.getValues(&status);
     getOutsideValues(&status);
     Serial.printf("Ti: %.1f, To: %.1f\n", status.insideTemperature, status.outsideTemperature);
-    
-    char buffer[256];
-    sprintf(buffer, "{\"WaschkuecheTemperaturInnen\": %.2f, \"WaschkuecheLuftfeuchtigkeitInnen\": %.2f, \"WaschkuecheTaupunktInnen\": %.2f, \"WaschkuecheTemperaturAussen\": %.2f, \"WaschkuecheLuftfeuchtigkeitAussen\": %.2f, \"WaschkuecheTaupunktAussen\": %.2f}", status.insideTemperature, status.insideHumidity, status.insideDewPoint, status.outsideTemperature, status.outsideHumidity, status.outsideDewPoint);
-    mqttPublish(buffer);
-    //mqttPublishStatus(&status);
-    if (status.insideDewPoint < status.outsideDewPoint) {
+
+    if (publishCounter == 25) {
+      publishCounter = 0;
+      mqttPublishStatus(&status);
+    }
+    else publishCounter++;
+
+    if (status.insideDewPoint > status.outsideDewPoint) {
       ledGreen.on();
     }
     else {
